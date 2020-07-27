@@ -3,18 +3,20 @@
 ```sql
 create table Alunos (
 RA smallint primary key,
-Nome varchar(40)
+Nome varchar(40) not null
 )
 
 create table Matriculas (
 RA smallint,
 Cod int,
-primary key (RA, Cod)
+primary key (RA, Cod),
+foreign key (RA) references Alunos(RA),
+foreign key (Cod) references Disciplinas(Cod)
 )
 
 create table Disciplinas (
 Cod int primary key,
-Nome varchar(40)
+Nome varchar(40) not null
 )
 
 create table Resultados (
@@ -22,7 +24,9 @@ RA smallint,
 Cod int,
 Nota float not null,
 Frequencia float not null,
-primary key (RA, Cod)
+primary key (RA, Cod),
+foreign key (RA) references Alunos(RA),
+foreign key (Cod) references Disciplinas(Cod)
 )
 ```
 
