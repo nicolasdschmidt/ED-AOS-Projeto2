@@ -1,3 +1,4 @@
+package src;
 import java.util.Objects;
 
 /**
@@ -6,8 +7,8 @@ import java.util.Objects;
  */
 public class Resultado
 {
-	private String ra;
-	private String codDisciplina;
+	private int ra;
+	private int codDisciplina;
 	private float nota;
 	private float frequencia;
 
@@ -19,7 +20,7 @@ public class Resultado
 	 * @param frequencia				Frequência do aluna na disciplina
 	 * @throws Exception				Se um dos parâmetros estiver em um formato invalido
 	 */
-	public Resultado(String ra, String codDisciplina, float nota, float frequencia) throws Exception
+	public Resultado(int ra, int codDisciplina, float nota, float frequencia) throws Exception
 	{
 		setRa(ra);
 		setCodDisciplina(codDisciplina);
@@ -31,7 +32,7 @@ public class Resultado
 	 * Retorna o RA
 	 * @return		RA do aluno
 	 */
-	public String getRa()
+	public int getRa()
 	{
 		return ra;
 	}
@@ -41,13 +42,8 @@ public class Resultado
 	 * @param ra				Ra do aluno
 	 * @throws Exception		Se o Ra for nulo
 	 */
-	public void setRa(String ra) throws Exception
+	public void setRa(int ra) throws Exception
 	{
-		if(ra.isEmpty())
-		{
-			throw new Exception("Ra vazio");
-		}
-
 		this.ra = ra;
 	}
 
@@ -55,7 +51,7 @@ public class Resultado
 	 * Retorna o Código da disciplina
 	 * @return			Código da disciplina
 	 */
-	public String getCodDisciplina()
+	public int getCodDisciplina()
 	{
 		return codDisciplina;
 	}
@@ -65,12 +61,8 @@ public class Resultado
 	 * @param codDisciplina			Novo código
 	 * @throws Exception			Se o código passado for nulo
 	 */
-	public void setCodDisciplina(String codDisciplina) throws Exception
+	public void setCodDisciplina(int codDisciplina) throws Exception
 	{
-		if(codDisciplina.isEmpty())
-		{
-			throw new Exception("Codigo da disciplina vazio");
-		}
 		this.codDisciplina = codDisciplina;
 	}
 
@@ -152,8 +144,8 @@ public class Resultado
 
 		return Float.compare(resultado.nota, nota) == 0
 				&& Float.compare(resultado.frequencia, frequencia) == 0
-				&& ra.equals(resultado.ra)
-				&& codDisciplina.equals(resultado.codDisciplina);
+				&& ra == resultado.ra
+				&& codDisciplina == resultado.codDisciplina;
 	}
 
 	/**
@@ -168,7 +160,7 @@ public class Resultado
 	 * Retorna um clone desse objeto
 	 */
 	@Override
-	protected Object clone()
+	public Object clone()
 	{
 		Resultado ret = null;
 
