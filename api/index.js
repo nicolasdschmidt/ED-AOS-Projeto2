@@ -210,7 +210,7 @@ function gerarResultado(data) {
 		.input('ra', sql.SmallInt, ra)
 		.input('cod', sql.Int, cod)
 		.input('nota', sql.Float, nota)
-		.input('freq', sql.Int, freq)
+		.input('freq', sql.Float, freq)
 		.query(
 			'insert into mali2.Resultados values(@ra, @cod, @nota, @freq)',
 			(err, res) => {
