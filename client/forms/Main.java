@@ -21,6 +21,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
 import src.Fila;
+import src.Resposta;
 import src.Resultado;
 import src.ClienteWS;
 
@@ -29,6 +30,14 @@ import javax.swing.GroupLayout.Alignment;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 
@@ -40,11 +49,13 @@ public class Main extends JFrame {
 	private JTextField txtNota;
 	private JTextField txtFrequencia;
 	private static Fila<Resultado> alunos;
+	private static Fila<Resultado> alunosSave;
+	private static Fila<String> respostas;
 	private JTable tblAlunos;
 	private static DefaultTableModel model;
 	private static Status status = new Status();
 	private static Add_status add_status;
-	private JList list;
+	private JList listaRespostas = new JList();
 
 	/**
 	 * Launch the application.
@@ -149,9 +160,10 @@ public class Main extends JFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				 api();
-				 add_status = new Add_status(alunos);
-				 add_status.setVisible(true);
+				alunosSave = (Fila<Resultado>) alunos.clone();
+				api();
+				add_status = new Add_status(alunosSave, respostas);
+				add_status.setVisible(true);
 			}
 		});
 		panel_2.add(btnSalvar);
@@ -196,28 +208,32 @@ public class Main extends JFrame {
 		{}
 	}
 
-	private void api() {
+	private void api() {		
 		String[] vetorAlunos = new String[this.alunos.getQtd()];
+		respostas = new Fila<String>();
 		int indice = 0;
 
 		while (!this.alunos.isVazia()) {
 			Resultado enviar = primeiroResultado();
 			try {
-				Resultado recebido = (Resultado) ClienteWS.postObjeto(enviar, Resultado.class, "http://localhost:3000");
-				vetorAlunos[indice] = "Sucesso ao avaliar o aluno do RA " + recebido.getRa() + ", na disciplina " + recebido.getCod();
+				Resposta res = ClienteWS.postObjeto(enviar, "http://localhost:3000");
+				int code = res.getCode();
+				if (code == 200) {
+					respostas.addItem("Sucesso");
+					vetorAlunos[indice] = "Sucesso";
+				} else {
+					respostas.addItem("Erro: " + res.getMessage());
+					vetorAlunos[indice] = "Erro: " + res.getMessage();
+				}
 			}
 			catch (Exception ex) {
-				//ex.printStackTrace();
-				System.err.println("Erro ao enviar: " + ex.getMessage());
-				vetorAlunos[indice] = "Erro ao avaliar o aluno do RA "+ enviar.getRa() + ": " + ex.getMessage();
+				vetorAlunos[indice] = "Erro: " + ex.getMessage();
 			}
 			finally {
 				removerResultado();
 				indice++;
 			}
 		}
-
-		list.setListData(vetorAlunos);
 	}
 	
 

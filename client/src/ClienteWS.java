@@ -52,39 +52,52 @@ public class ClienteWS
         return objetoRetorno;
     }
 
-    public static Object postObjeto (Object objetoEnvio,
-                                     Class tipoObjetoRetorno,
+    public static Resposta postObjeto (Object objetoEnvio,
                                      String urlWebService) throws Exception
     {
-        Object objetoRetorno = null;
+    	Resposta res = new Resposta(0, "");
+    	
+        try {
+        	String requestJson = toJson(objetoEnvio);
 
-        String requestJson = toJson(objetoEnvio);
+            URL url = new URL(urlWebService);
+            HttpURLConnection connection =
+                    (HttpURLConnection) url.openConnection();
+            
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            connection.setConnectTimeout(15000);
+            //connection.setRequestProperty("login", "seulogin");
+            //connection.setRequestProperty("senha", "suasenha");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Content-Length", Integer.toString(requestJson.length()));
 
-        URL url = new URL(urlWebService);
-        HttpURLConnection connection =
-                (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        connection.setUseCaches(false);
-        connection.setConnectTimeout(15000);
-        //connection.setRequestProperty("login", "seulogin");
-        //connection.setRequestProperty("senha", "suasenha");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("Content-Length", Integer.toString(requestJson.length()));
+            DataOutputStream stream =
+                    new DataOutputStream (connection.getOutputStream());
+            stream.write (requestJson.getBytes("UTF-8"));
+            stream.flush ();
+            stream.close ();
+            connection.connect ();
+            
+            String responseJson = null;
+            
+            int code = connection.getResponseCode();
+            res.setCode(code);
+            
+            if (code == 200) {
+            	res.setMessage(inputStreamToString (connection.getInputStream()));
+            } else {
+            	res.setMessage(inputStreamToString (connection.getErrorStream()));
+            }
+            
+            connection.disconnect();
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+        }
 
-        DataOutputStream stream =
-                new DataOutputStream (connection.getOutputStream());
-        stream.write (requestJson.getBytes("UTF-8"));
-        stream.flush ();
-        stream.close ();
-        connection.connect ();
-
-        String responseJson = inputStreamToString (connection.getInputStream());
-        connection.disconnect();
-        objetoRetorno = fromJson (responseJson, tipoObjetoRetorno);
-
-        return objetoRetorno;
+        return res;
     }
 
 
