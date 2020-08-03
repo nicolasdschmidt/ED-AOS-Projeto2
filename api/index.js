@@ -82,17 +82,70 @@ function printarErro(err) {
  * Função que guia todo o processo de verificação dos dados, remoção da matrícula, e geração do resultado
  */
 function processarDados(ra, cod, nota, freq, res) {
-	gerarResultado(ra, cod, nota, freq, res, function () {
-		verificarMatricula(ra, cod, res, function () {
-			removerMatricula(ra, cod, res)
+	let data = {
+		ra: ra,
+		cod: cod,
+		nota: nota,
+		freq: freq,
+		res: res,
+	}
+	verificarAluno(data)
+}
+
+/**
+ * Verifica se um aluno existe
+ */
+function verificarAluno(data) {
+	let response = data.res
+	let ra = data.ra
+	pool.request()
+		.input('ra', sql.SmallInt, ra)
+		.query('select * from mali2.Alunos where ra = @ra', (err, res) => {
+			if (err) {
+				response.sendStatus(500)
+			} else {
+				if (res.rowsAffected[0] > 0) verificarDisciplina(data)
+				else {
+					printarErro(`Aluno (${ra}) não existe`)
+					response.status(400).send(`Aluno (${ra}) não existe`)
+				}
+			}
 		})
-	})
+}
+
+/**
+ * Verifica se uma disciplina existe
+ */
+function verificarDisciplina(data) {
+	let response = data.res
+	let cod = data.cod
+	pool.request()
+		.input('cod', sql.Int, cod)
+		.query(
+			'select * from mali2.Disciplinas where cod = @cod',
+			(err, res) => {
+				if (err) {
+					response.sendStatus(500)
+				} else {
+					if (res.rowsAffected[0] > 0) verificarMatricula(data)
+					else {
+						printarErro(`Disciplina (${cod}) não existe`)
+						response
+							.status(400)
+							.send(`Disciplina (${cod}) não existe`)
+					}
+				}
+			}
+		)
 }
 
 /**
  * Verifica se um aluno está matriculado em uma disciplina
  */
-function verificarMatricula(ra, cod, response, callback) {
+function verificarMatricula(data) {
+	let response = data.res
+	let ra = data.ra
+	let cod = data.cod
 	pool.request()
 		.input('ra', sql.SmallInt, ra)
 		.input('cod', sql.Int, cod)
@@ -102,9 +155,8 @@ function verificarMatricula(ra, cod, response, callback) {
 				if (err) {
 					response.sendStatus(500)
 				} else {
-					if (res.rowsAffected > 0) {
-						callback()
-					} else {
+					if (res.rowsAffected[0] > 0) verificarResultado(data)
+					else {
 						printarErro(
 							`Aluno (${ra}) não está matriculado na Disciplina (${cod})`
 						)
@@ -120,9 +172,40 @@ function verificarMatricula(ra, cod, response, callback) {
 }
 
 /**
+ * Verifica se um resultado já existe
+ */
+function verificarResultado(data) {
+	let response = data.res
+	let ra = data.ra
+	let cod = data.cod
+	pool.request()
+		.input('ra', sql.SmallInt, ra)
+		.input('cod', sql.Int, cod)
+		.query(
+			'select * from mali2.Resultados where ra = @ra and cod = @cod',
+			(err, res) => {
+				if (err) {
+					response.sendStatus(500)
+				} else {
+					if (res.rowsAffected[0] == 0) gerarResultado(data)
+					else {
+						printarErro(`Resultado já existe`)
+						response.status(500).send(`Resultado já existe`)
+					}
+				}
+			}
+		)
+}
+
+/**
  * Gera e insere no BD o resultado de um aluno em uma matrícula
  */
-function gerarResultado(ra, cod, nota, freq, response, callback) {
+function gerarResultado(data) {
+	let response = data.res
+	let ra = data.ra
+	let cod = data.cod
+	let nota = data.nota
+	let freq = data.freq
 	pool.request()
 		.input('ra', sql.SmallInt, ra)
 		.input('cod', sql.Int, cod)
@@ -132,23 +215,12 @@ function gerarResultado(ra, cod, nota, freq, response, callback) {
 			'insert into mali2.Resultados values(@ra, @cod, @nota, @freq)',
 			(err, res) => {
 				if (err) {
-					if (err.message.includes('mali2.Alunos')) {
-						printarErro(`Aluno (${ra}) não existe`)
-						response.status(400).send(`Aluno (${ra}) não existe`)
-					} else if (err.message.includes('mali2.Disciplinas')) {
-						printarErro(`Disciplina (${cod}) não existe`)
-						response
-							.status(400)
-							.send(`Disciplina (${cod}) não existe`)
-					} else if (err.message.includes('mali2.Resultados')) {
-						printarErro(`Resultado já existe`)
-						response.status(500).send(`Resultado já existe`)
-					} else {
-						printarErro('Erro novo (???)')
-						response.sendStatus(500)
-					}
+					printarErro(
+						'Erro ao gerar resultado, a matrícula não foi removida'
+					)
+					response.status(500).send('Erro ao gerar resultado')
 				} else {
-					callback()
+					removerMatricula(data)
 				}
 			}
 		)
@@ -157,7 +229,10 @@ function gerarResultado(ra, cod, nota, freq, response, callback) {
 /**
  * Exclui a matrícula de um aluno do BD
  */
-function removerMatricula(ra, cod, response) {
+function removerMatricula(data) {
+	let response = data.res
+	let ra = data.ra
+	let cod = data.cod
 	pool.request()
 		.input('ra', sql.SmallInt, ra)
 		.input('cod', sql.Int, cod)
