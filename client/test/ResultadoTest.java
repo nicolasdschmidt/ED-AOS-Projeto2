@@ -22,25 +22,25 @@ class ResultadoTest {
     @Test
     public void getRa()
     {
-        assertEquals("19193", test.getRa());
+        assertEquals(19193, test.getRa());
     }
 
     @Test
     void getCodDisciplina()
     {
-        assertEquals("2", test.getCod());
+        assertEquals(2, test.getCod());
     }
 
     @Test
     void getNota()
     {
-        assertEquals(10, test.getNota(), 0);
+        assertEquals(10.0, test.getNota(), 0);
     }
 
     @Test
     void getFrequencia()
     {
-        assertEquals(1, test.getFreq(), 0);
+        assertEquals(1.0, test.getFreq(), 0);
     }
 
     @Test
