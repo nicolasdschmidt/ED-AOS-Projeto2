@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import src.Fila;
+import src.Resposta;
 import src.Resultado;
 
 import javax.swing.JTable;
@@ -40,15 +41,15 @@ public class Add_status extends JFrame {
 	 * Create the frame.
 	 * @param alunos 
 	 */
-	public Add_status(Fila<Resultado> alunos){
+	public Add_status(Fila<Resultado> alunos, Fila<String> respostas){
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 385, 307);
+		setBounds(100, 100, 650, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblEnviandoDados = new JLabel("Enviando dados");
+		JLabel lblEnviandoDados = new JLabel("Resultados");
 		contentPane.add(lblEnviandoDados, BorderLayout.NORTH);
 		
 		JPanel panel = new JPanel();
@@ -69,13 +70,17 @@ public class Add_status extends JFrame {
 		model.addColumn("Nota");
 		model.addColumn("Frequência");
 		
+		tblAlunos.getColumnModel().getColumn(0).setPreferredWidth(250);
+		
 		while(alunos.getQtd() > 0)
 		{
 			try 
 			{
 				Resultado aluno = alunos.recuperarItem();
-				model.addRow(new Object[]{"STATUS DA API", aluno.getRa(), aluno.getCodDisciplina(), aluno.getNota(), aluno.getFrequencia()});
+				String resposta = respostas.recuperarItem();
+				model.addRow(new Object[]{resposta, aluno.getRa(), aluno.getCod(), aluno.getNota(), aluno.getFreq()});
 				alunos.removerItem();
+				respostas.removerItem();
 			}
 			catch(Exception ex)
 			{}

@@ -52,19 +52,18 @@ public class ClienteWS
         return objetoRetorno;
     }
 
-    public static Object postObjeto (Object objetoEnvio,
-                                     Class tipoObjetoRetorno,
-                                     String urlWebService)
+    public static Resposta postObjeto (Object objetoEnvio,
+                                     String urlWebService) throws Exception
     {
-        Object objetoRetorno = null;
-
-        try
-        {
-            String requestJson = toJson(objetoEnvio);
+    	Resposta res = new Resposta(0, "");
+    	
+        try {
+        	String requestJson = toJson(objetoEnvio);
 
             URL url = new URL(urlWebService);
             HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
+            
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setUseCaches(false);
@@ -81,17 +80,24 @@ public class ClienteWS
             stream.flush ();
             stream.close ();
             connection.connect ();
-
-            String responseJson = inputStreamToString (connection.getInputStream());
+            
+            String responseJson = null;
+            
+            int code = connection.getResponseCode();
+            res.setCode(code);
+            
+            if (code == 200) {
+            	res.setMessage(inputStreamToString (connection.getInputStream()));
+            } else {
+            	res.setMessage(inputStreamToString (connection.getErrorStream()));
+            }
+            
             connection.disconnect();
-            objetoRetorno = fromJson (responseJson, tipoObjetoRetorno);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
+        } catch (Exception ex) {
+        	ex.printStackTrace();
         }
 
-        return objetoRetorno;
+        return res;
     }
 
 

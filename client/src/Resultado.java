@@ -8,24 +8,24 @@ import java.util.Objects;
 public class Resultado
 {
 	private int ra;
-	private int codDisciplina;
+	private int cod;
 	private float nota;
-	private float frequencia;
+	private float freq;
 
 	/**
 	 * Gera o construtor da classe
 	 * @param ra						Ra do aluno
-	 * @param codDisciplina				Disciplina em questão
+	 * @param cod						Disciplina em questão
 	 * @param nota						Nota do aluno na desciplina
-	 * @param frequencia				Frequência do aluna na disciplina
+	 * @param freq						Frequência do aluna na disciplina
 	 * @throws Exception				Se um dos parâmetros estiver em um formato invalido
 	 */
-	public Resultado(int ra, int codDisciplina, float nota, float frequencia) throws Exception
+	public Resultado(int ra, int cod, float nota, float freq) throws Exception
 	{
 		setRa(ra);
-		setCodDisciplina(codDisciplina);
+		setCod(cod);
 		setNota(nota);
-		setFrequencia(frequencia);
+		setFreq(freq);
 	}
 
 	/**
@@ -51,9 +51,9 @@ public class Resultado
 	 * Retorna o Código da disciplina
 	 * @return			Código da disciplina
 	 */
-	public int getCodDisciplina()
+	public int getCod()
 	{
-		return codDisciplina;
+		return cod;
 	}
 
 	/**
@@ -61,9 +61,9 @@ public class Resultado
 	 * @param codDisciplina			Novo código
 	 * @throws Exception			Se o código passado for nulo
 	 */
-	public void setCodDisciplina(int codDisciplina) throws Exception
+	public void setCod(int codDisciplina) throws Exception
 	{
-		this.codDisciplina = codDisciplina;
+		this.cod = codDisciplina;
 	}
 
 	/**
@@ -93,9 +93,9 @@ public class Resultado
 	 * Retorna a frequencia do aluno na disciplina
 	 * @return				Frequencia da disciplina
 	 */
-	public float getFrequencia()
+	public float getFreq()
 	{
-		return frequencia;
+		return freq;
 	}
 
 	/**
@@ -103,14 +103,14 @@ public class Resultado
 	 * @param frequencia	Nova frequência para o aluno
 	 * @throws Exception	Se a frequencia for menor que 0 ou maior que 1
 	 */
-	public void setFrequencia(float frequencia) throws Exception
+	public void setFreq(float frequencia) throws Exception
 	{
 		if((frequencia < 0 )|| (frequencia > 1))
 		{
 			throw new Exception("Frequência inválida");
 		}
 
-		this.frequencia = frequencia;
+		this.freq = frequencia;
 	}
 
 	/**
@@ -121,9 +121,9 @@ public class Resultado
 	public String toString() {
 		return "Resultado{" +
 				"ra='" + ra + '\'' +
-				", codDisciplina='" + codDisciplina + '\'' +
+				", codDisciplina='" + cod + '\'' +
 				", nota=" + nota +
-				", frequencia=" + frequencia +
+				", frequencia=" + freq +
 				'}';
 	}
 
@@ -143,9 +143,9 @@ public class Resultado
 		Resultado resultado = (Resultado) o;
 
 		return Float.compare(resultado.nota, nota) == 0
-				&& Float.compare(resultado.frequencia, frequencia) == 0
+				&& Float.compare(resultado.freq, freq) == 0
 				&& ra == resultado.ra
-				&& codDisciplina == resultado.codDisciplina;
+				&& cod == resultado.cod;
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class Resultado
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.hash(ra, codDisciplina, nota, frequencia);
+		return Objects.hash(ra, cod, nota, freq);
 	}
 
 	/**
@@ -185,8 +185,8 @@ public class Resultado
 			throw new Exception("modelo ausente");
 
 		this.ra = modelo.ra;
-		this.codDisciplina = modelo.codDisciplina;
+		this.cod = modelo.cod;
 		this.nota = modelo.nota;
-		this.frequencia = modelo.frequencia;
+		this.freq = modelo.freq;
 	}
 }
