@@ -8,9 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -24,6 +22,7 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import src.Fila;
 import src.Resultado;
+import src.ClienteWS;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -45,6 +44,7 @@ public class Main extends JFrame {
 	private static DefaultTableModel model;
 	private static Status status = new Status();
 	private static Add_status add_status;
+	private JList list;
 
 	/**
 	 * Launch the application.
@@ -149,6 +149,7 @@ public class Main extends JFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
+				 api();
 				 add_status = new Add_status(alunos);
 				 add_status.setVisible(true);
 			}
@@ -175,6 +176,47 @@ public class Main extends JFrame {
 		model.addColumn("Codigo da disciplina");
 		model.addColumn("Nota");
 		model.addColumn("Frequência");
+	}
+
+	private Resultado primeiroResultado() {
+		Resultado ret = null;
+		try {
+			ret = this.alunos.recuperarItem();
+		}
+		catch (Exception ex)
+		{}
+		return ret;
+	}
+
+	private void removerResultado() {
+		try {
+			this.alunos.removerItem();
+		}
+		catch (Exception ex)
+		{}
+	}
+
+	private void api() {
+		String[] vetorAlunos = new String[this.alunos.getQtd()];
+		int indice = 0;
+
+		while (!this.alunos.isVazia()) {
+			Resultado enviar = primeiroResultado();
+			try {
+				Resultado recebido = (Resultado) ClienteWS.postObjeto(enviar, Resultado.class, "localhost q esta");
+				vetorAlunos[indice] = "Sucesso ao avaliar o aluno do RA " + recebido.getRa() + ", na disciplina " + recebido.getCodDisciplina();
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+				vetorAlunos[indice] = "Erro ao avaliar o aluno do RA "+ enviar.getRa() + ": " + ex.getMessage();
+			}
+			finally {
+				removerResultado();
+				indice++;
+			}
+		}
+
+		list.setListData(vetorAlunos);
 	}
 	
 

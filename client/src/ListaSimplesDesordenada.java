@@ -172,6 +172,15 @@ public class ListaSimplesDesordenada <X>
             
         return ret;
     }
+
+    /**
+     * retorna true se a lista estiver vazia
+     * @return
+     */
+    public boolean isVazia()
+    {
+        return this.primeiro == null;
+    }
     
     /**
 	 * Get da quantidade de Nós na lista

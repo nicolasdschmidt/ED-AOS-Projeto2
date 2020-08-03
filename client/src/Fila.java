@@ -38,6 +38,11 @@ public class Fila <X>
 	{
 		return lista.getDoInicio();
 	}
+
+	public boolean isVazia ()
+	{
+		return this.lista.isVazia();
+	}
 	
 	/**
 	 * Remove do início da fila.

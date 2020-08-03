@@ -13,7 +13,7 @@ class ResultadoTest {
 
     {
         try {
-            test = new Resultado("19193", "2", 10, 1);
+            test = new Resultado(19193, 2, 10, 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
