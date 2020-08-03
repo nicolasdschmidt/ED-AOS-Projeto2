@@ -43,7 +43,7 @@ public class Add_status extends JFrame {
 	 */
 	public Add_status(Fila<Resultado> alunos, Fila<String> respostas){
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 650, 300);
+		setBounds(100, 100, 700, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -70,7 +70,7 @@ public class Add_status extends JFrame {
 		model.addColumn("Nota");
 		model.addColumn("Frequência");
 		
-		tblAlunos.getColumnModel().getColumn(0).setPreferredWidth(250);
+		tblAlunos.getColumnModel().getColumn(0).setPreferredWidth(350);
 		
 		while(alunos.getQtd() > 0)
 		{

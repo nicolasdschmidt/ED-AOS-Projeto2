@@ -122,7 +122,7 @@ public class Main extends JFrame {
 		panel_2.add(txtFrequencia);
 		txtFrequencia.setColumns(10);
 		
-		JButton btnAdicionar = new JButton("Adionar");
+		JButton btnAdicionar = new JButton("Adicionar");
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -160,10 +160,15 @@ public class Main extends JFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
+				int rowCount = model.getRowCount();
+				for (int r = 0; r < rowCount; r++) {
+					model.removeRow(0);
+				}
 				alunosSave = (Fila<Resultado>) alunos.clone();
 				api();
 				add_status = new Add_status(alunosSave, respostas);
 				add_status.setVisible(true);
+				alunos = new Fila<Resultado>();
 			}
 		});
 		panel_2.add(btnSalvar);
@@ -185,7 +190,7 @@ public class Main extends JFrame {
 		panel.add(tblAlunos, BorderLayout.CENTER);
 		
 		model.addColumn("RA");
-		model.addColumn("Codigo da disciplina");
+		model.addColumn("Disciplina");
 		model.addColumn("Nota");
 		model.addColumn("Frequência");
 	}
