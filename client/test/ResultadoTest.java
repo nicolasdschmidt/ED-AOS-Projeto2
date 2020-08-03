@@ -28,7 +28,7 @@ class ResultadoTest {
     @Test
     void getCodDisciplina()
     {
-        assertEquals("2", test.getCodDisciplina());
+        assertEquals("2", test.getCod());
     }
 
     @Test
@@ -40,7 +40,7 @@ class ResultadoTest {
     @Test
     void getFrequencia()
     {
-        assertEquals(1, test.getFrequencia(), 0);
+        assertEquals(1, test.getFreq(), 0);
     }
 
     @Test

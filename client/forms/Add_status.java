@@ -74,7 +74,7 @@ public class Add_status extends JFrame {
 			try 
 			{
 				Resultado aluno = alunos.recuperarItem();
-				model.addRow(new Object[]{"STATUS DA API", aluno.getRa(), aluno.getCodDisciplina(), aluno.getNota(), aluno.getFrequencia()});
+				model.addRow(new Object[]{"STATUS DA API", aluno.getRa(), aluno.getCod(), aluno.getNota(), aluno.getFreq()});
 				alunos.removerItem();
 			}
 			catch(Exception ex)

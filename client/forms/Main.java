@@ -203,11 +203,12 @@ public class Main extends JFrame {
 		while (!this.alunos.isVazia()) {
 			Resultado enviar = primeiroResultado();
 			try {
-				Resultado recebido = (Resultado) ClienteWS.postObjeto(enviar, Resultado.class, "localhost q esta");
-				vetorAlunos[indice] = "Sucesso ao avaliar o aluno do RA " + recebido.getRa() + ", na disciplina " + recebido.getCodDisciplina();
+				Resultado recebido = (Resultado) ClienteWS.postObjeto(enviar, Resultado.class, "http://localhost:3000");
+				vetorAlunos[indice] = "Sucesso ao avaliar o aluno do RA " + recebido.getRa() + ", na disciplina " + recebido.getCod();
 			}
 			catch (Exception ex) {
-				ex.printStackTrace();
+				//ex.printStackTrace();
+				System.err.println("Erro ao enviar: " + ex.getMessage());
 				vetorAlunos[indice] = "Erro ao avaliar o aluno do RA "+ enviar.getRa() + ": " + ex.getMessage();
 			}
 			finally {
